@@ -1,6 +1,6 @@
 We have to validate fields in the object according to some logic. I provide an example of this class.
 
-```
+```java
 @Data
 public class Example {
     private String a;
@@ -11,22 +11,22 @@ public class Example {
 ```
 All fields can be nullable. If field "a" is present then field "b" has to be present too. If field "c" is blank then field "d" has to be blank too.
 My first variant is
-```
+```java
 public class Validator {
 
     public void validate(Example example) {
         List.of(example.getA(), example.getB(), example.getC(), example.getD())
-        .forEach(this::validateSomeLogic);
+                .forEach(this::validateSomeLogic);
     }
 
-    private void validateSomeLogic(String address) {
+    private void validateSomeLogic(String example) {
         ...
     }
 }
 ```
 
 We get a npe when one of the fields is null. Hm, I can add logic to prevent adding null objects to the list. Let's see what happens.
-```
+```java
 public class Validator {
 
     public void validate(Example example) {
@@ -38,7 +38,7 @@ public class Validator {
         list.forEach(this::validateSomeLogic);
     }
 
-    private void validateSomeLogic(String address) {
+    private void validateSomeLogic(String example) {
         ...
     }
 }
@@ -46,15 +46,16 @@ public class Validator {
 
 It works but it looks a little bit clumsy. Do we have a way to do lazy initialization?
 One of the differences between collections and streams is that streams support lazy initialization.
-```
+```java
 public class Validator {
 
     public void validate(Example example) {
         Stream.of(example.getA(), example.getB(), example.getC(), example.getD())
-        .forEach(this::validateSomeLogic);
+                .filter(Objects::nonNull)
+                .forEach(this::validateSomeLogic);
     }
 
-    private void validateSomeLogic(String address) {
+    private void validateSomeLogic(String example) {
         ...
     }
 }
