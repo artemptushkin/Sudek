@@ -1,4 +1,4 @@
-We have to validate fields in the object according to some logic. I provide an example of this class.
+Let's consider, we have to validate fields in the object according to some logic. I provide an example of this class.
 
 ```java
 @Data
@@ -9,7 +9,8 @@ public class Example {
     private String d;
 }
 ```
-All fields can be nullable. If field "a" is present then field "b" has to be present too. If field "c" is blank then field "d" has to be blank too.
+//непонятно, логика текстом написана, что поля завязаны друг на другу, а ты проверяешь чисто на null позже
+All fields ~~can be nullable~~ are nullable?. If field "a" is present then field "b" has to be present too. If field "c" is blank then field "d" has to be blank too.
 My first variant is
 ```java
 public class Validator {
@@ -18,14 +19,16 @@ public class Validator {
         List.of(example.getA(), example.getB(), example.getC(), example.getD())
                 .forEach(this::validateSomeLogic);
     }
-
+    
     private void validateSomeLogic(String example) {
         ...
     }
 }
 ```
 
-We get a npe when one of the fields is null. Hm, I can add logic to prevent adding null objects to the list. Let's see what happens.
+Assume, once we receive `null` for a field, in this case we get NPE when one of the fields is null.
+The straightforward solution to prevent the error will be the null check definition before adding a value to the list.
+Let's see what happens.
 ```java
 public class Validator {
 
@@ -60,4 +63,4 @@ public class Validator {
     }
 }
 ```
-It looks much better! I think this example is good to provide differences between types of initializations in collections and streams.
+It looks much better! I think this example is good to demonstrate the differences between types of initializations in collections and streams.
